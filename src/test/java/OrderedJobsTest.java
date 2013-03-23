@@ -27,11 +27,26 @@ public class OrderedJobsTest {
     @Test
     public void shouldReturnOrderedJobsWhenJobsHasNoDependencies(){
         String orderedJobs = JobOrdering.orderJobs(new Job("a"), new Job("b"), new Job("c"));
-        assertThat(orderedJobs).isEqualTo("abc");
+        assertThat(orderedJobs).contains("a");
+        assertThat(orderedJobs).contains("b");
+        assertThat(orderedJobs).contains("c");
+
+        orderedJobs = JobOrdering.orderJobs(new Job("a"), new Job("c"), new Job("b"));
+        assertThat(orderedJobs).contains("a");
+        assertThat(orderedJobs).contains("b");
+        assertThat(orderedJobs).contains("c");
     }
+
     @Test
-    public void shouldReturnOrderedJobsWhenJobsHasNoDependencies2(){
-        String orderedJobs = JobOrdering.orderJobs(new Job("a"), new Job("c"), new Job("b"));
-        assertThat(orderedJobs).isEqualTo("acb");
+    public void shouldReturnOrderedJobsWhenMultipleJobsOneDependencies(){
+        Job a = new Job("a");
+        Job c = new Job("c");
+        Job b = new Job("b", c);
+        String orderedJobs = JobOrdering.orderJobs(a, b, c);
+        assertThat(orderedJobs).contains("a");
+        assertThat(orderedJobs).contains("b");
+        assertThat(orderedJobs).contains("c");
+        assertThat(orderedJobs.indexOf("c")).isLessThan(orderedJobs.indexOf("b"));
+
     }
 }

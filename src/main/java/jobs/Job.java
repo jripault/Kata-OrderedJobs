@@ -6,11 +6,17 @@ package jobs;
  */
 public class Job {
     public String name = "";
+    public Job dependsOn = null;
 
     public Job() {
     }
 
     public Job(String name) {
         this.name = name;
+    }
+
+    public Job(String name, Job dependsOn) {
+        this.name = name;
+        this.dependsOn = dependsOn;
     }
 }
