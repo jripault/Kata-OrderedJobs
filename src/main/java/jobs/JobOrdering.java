@@ -5,10 +5,13 @@ package jobs;
  * Date: 23/03/13
  */
 public class JobOrdering {
-    public static String orderJobs(Job job) {
-        if ("".equals(job.name))
+    public static String orderJobs(Job... jobs) {
+        if (jobs.length == 0)
             return "";
-
-        return job.name;
+        StringBuilder builder = new StringBuilder();
+        for (Job job : jobs) {
+            builder.append(job.name);
+        }
+        return builder.toString();
     }
 }
