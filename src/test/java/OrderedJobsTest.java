@@ -38,7 +38,7 @@ public class OrderedJobsTest {
     }
 
     @Test
-    public void shouldReturnOrderedJobsWhenMultipleJobsOneDependencies(){
+    public void shouldReturnOrderedJobsWhenMultipleJobsOneDependency(){
         Job a = new Job("a");
         Job c = new Job("c");
         Job b = new Job("b", c);
@@ -47,6 +47,28 @@ public class OrderedJobsTest {
         assertThat(orderedJobs).contains("b");
         assertThat(orderedJobs).contains("c");
         assertThat(orderedJobs.indexOf("c")).isLessThan(orderedJobs.indexOf("b"));
+
+    }
+
+    @Test
+    public void shouldReturnOrderedJobsWhenMultipleJobsMultipleDependencies(){
+        Job a = new Job("a");
+        Job f = new Job("f");
+        Job c = new Job("c", f);
+        Job b = new Job("b", c);
+        Job d = new Job("d", a);
+        Job e = new Job("e", b);
+        String orderedJobs = JobOrdering.orderJobs(a, b, c, d, e, f);
+        assertThat(orderedJobs).contains("a");
+        assertThat(orderedJobs).contains("b");
+        assertThat(orderedJobs).contains("c");
+        assertThat(orderedJobs).contains("d");
+        assertThat(orderedJobs).contains("e");
+        assertThat(orderedJobs).contains("f");
+        assertThat(orderedJobs.indexOf("c")).isLessThan(orderedJobs.indexOf("b"));
+        assertThat(orderedJobs.indexOf("f")).isLessThan(orderedJobs.indexOf("c"));
+        assertThat(orderedJobs.indexOf("b")).isLessThan(orderedJobs.indexOf("e"));
+        assertThat(orderedJobs.indexOf("a")).isLessThan(orderedJobs.indexOf("d"));
 
     }
 }

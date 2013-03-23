@@ -1,6 +1,8 @@
 package jobs;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -13,17 +15,26 @@ public class JobOrdering {
             return "";
         StringBuilder builder = new StringBuilder();
 
+        List<Job> doneJobs = new ArrayList<Job>();
         List<Job> dependantJobs = new ArrayList<Job>();
         for (Job job : jobs) {
-            if(job.dependsOn != null){
+            if (job.dependsOn != null) {
                 dependantJobs.add(job);
-            }else{
+            } else {
+                doneJobs.add(job);
                 builder.append(job.name);
             }
         }
 
-        for (Job job : dependantJobs) {
-            builder.append(job.name);
+        while (dependantJobs.size() > 0) {
+            List<Job> tempJobs = new ArrayList<Job>(dependantJobs);
+            for (Job job : tempJobs) {
+                if (doneJobs.contains(job.dependsOn)) {
+                    builder.append(job.name);
+                    doneJobs.add(job);
+                    dependantJobs.remove(job);
+                }
+            }
         }
         return builder.toString();
     }
