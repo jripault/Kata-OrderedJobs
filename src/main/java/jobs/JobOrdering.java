@@ -20,7 +20,10 @@ public class JobOrdering {
         for (Job job : jobs) {
             if (job.dependsOn != null) {
                 if(job.dependsOn == job){
-                    throw new RuntimeException("A job cannot depend on itself");
+                    throw new SelfReferencingException("A job cannot depend on itself");
+                }
+                if(searchForCircularDependencies(job, job.dependsOn)){
+                    throw new CircularDependenciesException();
                 }
                 dependantJobs.add(job);
             } else {
@@ -40,5 +43,15 @@ public class JobOrdering {
             }
         }
         return builder.toString();
+    }
+
+    private static boolean searchForCircularDependencies(Job rootJob, Job currentJob){
+        if(currentJob == null){
+            return false;
+        }
+        if(currentJob == rootJob){
+            return true;
+        }
+        return searchForCircularDependencies(rootJob, currentJob.dependsOn);
     }
 }

@@ -1,5 +1,7 @@
+import jobs.CircularDependenciesException;
 import jobs.Job;
 import jobs.JobOrdering;
+import jobs.SelfReferencingException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -69,15 +71,27 @@ public class OrderedJobsTest {
         assertThat(orderedJobs.indexOf("f")).isLessThan(orderedJobs.indexOf("c"));
         assertThat(orderedJobs.indexOf("b")).isLessThan(orderedJobs.indexOf("e"));
         assertThat(orderedJobs.indexOf("a")).isLessThan(orderedJobs.indexOf("d"));
-
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test(expected = SelfReferencingException.class)
     public void shouldReturnExceptionWhenMultipleJobsSelfReferencingDependency(){
         Job a = new Job("a");
         Job b = new Job("b");
         Job c = new Job("c");
         c.dependsOn = c;
         JobOrdering.orderJobs(a, b, c);
+    }
+
+    @Test(expected = CircularDependenciesException.class)
+    public void shouldReturnExceptionWhenCircularDependencies(){
+        Job a = new Job("a");
+        Job f = new Job("f");
+        Job c = new Job("c", f);
+        Job b = new Job("b", c);
+        Job d = new Job("d", a);
+        Job e = new Job("e");
+        f.dependsOn = b;
+
+        JobOrdering.orderJobs(a, b, c, d, e, f);
     }
 }
