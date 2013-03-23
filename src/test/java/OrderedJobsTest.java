@@ -71,4 +71,13 @@ public class OrderedJobsTest {
         assertThat(orderedJobs.indexOf("a")).isLessThan(orderedJobs.indexOf("d"));
 
     }
+
+    @Test(expected = RuntimeException.class)
+    public void shouldReturnExceptionWhenMultipleJobsSelfReferencingDependency(){
+        Job a = new Job("a");
+        Job b = new Job("b");
+        Job c = new Job("c");
+        c.dependsOn = c;
+        JobOrdering.orderJobs(a, b, c);
+    }
 }

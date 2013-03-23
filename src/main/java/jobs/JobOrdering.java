@@ -19,6 +19,9 @@ public class JobOrdering {
         List<Job> dependantJobs = new ArrayList<Job>();
         for (Job job : jobs) {
             if (job.dependsOn != null) {
+                if(job.dependsOn == job){
+                    throw new RuntimeException("A job cannot depend on itself");
+                }
                 dependantJobs.add(job);
             } else {
                 doneJobs.add(job);
