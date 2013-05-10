@@ -19,7 +19,7 @@ public class JobOrdering {
         List<Job> dependantJobs = new ArrayList<Job>();
         for (Job job : jobs) {
             if (job.dependsOn != null) {
-                if(job.dependsOn == job){
+                if(job.dependsOn.equals(job)){
                     throw new SelfReferencingException("A job cannot depend on itself");
                 }
                 if(searchForCircularDependencies(job, job.dependsOn)){
@@ -49,7 +49,7 @@ public class JobOrdering {
         if(currentJob == null){
             return false;
         }
-        if(currentJob == rootJob){
+        if(currentJob.equals(rootJob)){
             return true;
         }
         return searchForCircularDependencies(rootJob, currentJob.dependsOn);
